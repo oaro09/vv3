@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>唠唠嗑</title>
+  <style>
+    body { background: #f4f4f4; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: "Segoe UI", sans-serif;}
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px 32px 24px 32px; max-width: 960px; width: 100%; margin: 0 auto; text-align: center;}
+    .video-container { width: 100%; max-width: 900px; margin: 24px auto 0 auto; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative;}
+    .plv-player-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
+    #msg { color: red; margin-bottom: 20px;}
+    @media (max-width: 1000px) { .card { max-width: 100vw; padding: 12px 0 12px 0; } .video-container { max-width: 100vw; border-radius: 0; } }
+    @media (max-width: 600px) { .video-container { aspect-ratio: 16/9; } .card { padding: 6px 0 6px 0; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="msg"></div>
+    <div id="input-area">
+      <input type="password" id="password" placeholder="请输入一次性密码" style="padding:8px;width:200px;">
+      <button onclick="checkPwd()" style="padding:8px 16px;">验证</button>
+    </div>
+    <div id="video-area" style="display:none;">
+      <h2 style="margin-bottom:16px;">唠唠嗑</h2>
+      <div class="video-container">
+        <div id="plv_player" class="plv-player-wrap"></div>
+      </div>
+    </div>
+  </div>
+  <!-- 保利威播放器SDK -->
+  <script src="https://player.polyv.net/resp/vod-player/latest/player.js"></script>
+  <script>
+    // 替换为你的阿里云函数计算HTTP触发器地址
+    const FC_URL = 'https://pwed-pebdlddnae.cn-shanghai.fcapp.run';
+
+    function checkPwd() {
+      const pwd = document.getElementById('password').value.trim();
+      const msgDiv = document.getElementById('msg');
+      msgDiv.innerText = '';
+      if (!pwd) {
+        msgDiv.innerText = '请输入密码';
+        return;
+      }
+      fetch(FC_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({password: pwd})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('input-area').style.display = 'none';
+          document.getElementById('video-area').style.display = '';
+          // 用后端返回的vid初始化播放器
+          polyvPlayer({
+            'wrap': '#plv_player',
+            'width': '100%',
+            'height': '100%',
+            'vid': data.vid,
+            'playsafe': ''
+          });
+        } else {
+          msgDiv.innerText = data.message || "密码错误或已被使用";
+        }
+      })
+      .catch(() => {
+        msgDiv.innerText = '网络错误，请重试';
+      });
+    }
+  </script>
+</body>
+</html>
