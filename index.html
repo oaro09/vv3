@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>唠唠嗑</title>
+  <title>唠唠嗑吧</title>
   <style>
     body { background: #f4f4f4; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: "Segoe UI", sans-serif;}
     .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px 32px 24px 32px; max-width: 960px; width: 100%; margin: 0 auto; text-align: center;}
@@ -17,7 +17,7 @@
   <div class="card">
     <div id="msg"></div>
     <div id="input-area">
-      <input type="password" id="password" placeholder="请输入一次性密码" style="padding:8px;width:200px;">
+      <input type="password" id="password" placeholder="请输入专属密码" style="padding:8px;width:200px;">
       <button onclick="checkPwd()" style="padding:8px 16px;">验证</button>
     </div>
     <div id="video-area" style="display:none;">
@@ -27,10 +27,10 @@
       </div>
     </div>
   </div>
-  <!-- 保利威播放器SDK -->
+  <!-- baoliweiSDK -->
   <script src="https://player.polyv.net/resp/vod-player/latest/player.js"></script>
   <script>
-    // 替换为你的阿里云函数计算HTTP触发器地址
+    // ali
     const FC_URL = 'https://pwed-pebdlddnae.cn-shanghai.fcapp.run';
 
     function checkPwd() {
@@ -51,7 +51,7 @@
         if (data.success) {
           document.getElementById('input-area').style.display = 'none';
           document.getElementById('video-area').style.display = '';
-          // 用后端返回的vid初始化播放器
+          // vid
           polyvPlayer({
             'wrap': '#plv_player',
             'width': '100%',
